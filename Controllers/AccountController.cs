@@ -51,5 +51,45 @@ namespace QuyenGopOnline.Controllers
             }
             return View(model);
         }
+
+        // GET: Hiển thị trang đăng ký
+        [HttpGet]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        // POST: Xử lý lưu người dùng mới
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Kiểm tra xem email đã tồn tại chưa
+                var existingUser = _context.Users.FirstOrDefault(u => u.Email == model.Email);
+                if (existingUser != null)
+                {
+                    ModelState.AddModelError("Email", "Email này đã được sử dụng.");
+                    return View(model);
+                }
+
+                // Tạo đối tượng User mới từ dữ liệu form
+                var newUser = new User
+                {
+                    FullName = model.FullName,
+                    Email = model.Email,
+                    Password = model.Password, // Lưu ý: Dự án lớn nên băm mật khẩu
+                    Role = "User" // Mặc định đăng ký mới là User thường
+                };
+
+                _context.Users.Add(newUser);
+                _context.SaveChanges(); // Lưu vào SQL Server
+
+                // Sau khi đăng ký xong, chuyển sang trang Login
+                return RedirectToAction("Login");
+            }
+            return View(model);
+        }
+
     }
 }
