@@ -1,29 +1,74 @@
+@model QuyenGopOnline.Models.DashboardViewModel
+
 @{
-    ViewData["Title"] = "Bảng điều khiển Admin";
+    ViewData["Title"] = "Admin Dashboard";
 }
 
-<div class="container mt-4">
-    <div class="jumbotron shadow p-5 mb-4 bg-light rounded">
-        <h1 class="display-4">Chào mừng Admin!</h1>
-        <p class="lead">Đây là trang quản trị hệ thống quyên góp trực tuyến.</p>
-        <hr class="my-4">
-        <div class="row">
-            <div class="col-md-4">
-                <div class="card text-white bg-primary mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Tổng tiền quyên góp</h5>
-                        <p class="card-text h2">0 VNĐ</p>
-                    </div>
+<div class="container-fluid px-4">
+    <h1 class="mt-4 text-primary">Hệ Thống Quản Trị</h1>
+    <ol class="breadcrumb mb-4">
+        <li class="breadcrumb-item active">Tổng quan dự án quyên góp</li>
+    </ol>
+
+    <div class="row">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-primary text-white shadow">
+                <div class="card-body">
+                    <div class="small">TỔNG NGƯỜI DÙNG</div>
+                    <div class="h3">@Model.TotalUsers</div>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="card text-white bg-success mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Số giao dịch</h5>
-                        <p class="card-text h2">0</p>
-                    </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-success text-white shadow">
+                <div class="card-body">
+                    <div class="small">TỔNG TIỀN QUYÊN GÓP</div>
+                    <div class="h3">@Model.TotalDonations.ToString("N0") VNĐ</div>
                 </div>
             </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-warning text-white shadow">
+                <div class="card-body">
+                    <div class="small">BÀI VIẾT KÊU GỌI</div>
+                    <div class="h3">@Model.TotalPosts</div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card bg-danger text-white shadow">
+                <div class="card-body">
+                    <div class="small">GIAO DỊCH MỚI</div>
+                    <div class="h3">@Model.TotalTransactions</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4 shadow border-0">
+        <div class="card-header bg-dark text-white">
+            <i class="fas fa-table me-1"></i> Thành viên mới đăng ký
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead class="table-light">
+                    <tr>
+                        <th>Họ Tên</th>
+                        <th>Email</th>
+                        <th>Vai trò</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var user in Model.RecentUsers)
+                    {
+                        <tr>
+                            <td>@user.FullName</td>
+                            <td>@user.Email</td>
+                            <td><span class="badge bg-info text-dark">@user.Role</span></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
