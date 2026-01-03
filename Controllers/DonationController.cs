@@ -51,6 +51,18 @@ namespace QuyenGopOnline.Controllers
             }
 
             return View(model);
+
+        }
+        // GET: /Donation/History
+        public IActionResult History()
+        {
+            // Lấy danh sách giao dịch, bao gồm cả thông tin User và Bài viết (nếu đã tạo bảng Posts)
+            // Sắp xếp theo ngày mới nhất lên đầu
+            var transactions = _context.Transactions
+            .OrderByDescending(t => t.DonationDate)
+            .ToList();
+
+            return View(transactions);
         }
     }
 }
