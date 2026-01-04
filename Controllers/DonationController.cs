@@ -3,6 +3,7 @@ using QuyenGopOnline.Data;
 using QuyenGopOnline.Models;
 using System.Security.Claims; // Để lấy ID người dùng đã đăng nhập
 
+
 namespace QuyenGopOnline.Controllers
 {
     public class DonationController : Controller
@@ -16,43 +17,62 @@ namespace QuyenGopOnline.Controllers
 
         // POST: Xử lý khi nhấn nút Quyên góp
         [HttpPost]
-        public IActionResult SubmitDonation(DonationViewModel model)
+public IActionResult SubmitDonation(DonationViewModel model)
+{
+    // Kiểm tra tính hợp lệ của dữ liệu
+    if (ModelState.IsValid)
+    {
+        try 
         {
-            if (ModelState.IsValid)
+            // 1. Giả lập ID người dùng (Đảm bảo trong bảng Users đã có người có Id = 1)
+            var userId = 1; 
+
+            // 2. Tạo đối tượng Transaction
+            var transaction = new Transaction
             {
-                // 1. Lấy thông tin người dùng đang đăng nhập (Giả định Phát đã lưu UserId vào Session/Cookie)
-                // Ở mức cơ bản, Huy có thể lấy tạm UserId từ Database hoặc gán cứng để test
-                var userId = 1; // Ví dụ là Admin hoặc User đầu tiên
+                UserId = userId,
+                PostId = model.PostId,
+                Amount = model.Amount,
+                Note = model.Note,
+                DonationDate = DateTime.Now
+            };
 
-                // 2. Tạo bản ghi giao dịch mới
-                var transaction = new Transaction
-                {
-                    UserId = userId,
-                    PostId = model.PostId,
-                    Amount = model.Amount,
-                    Note = model.Note,
-                    DonationDate = DateTime.Now
-                };
+            // 3. Thêm vào DbContext
+            _context.Transactions.Add(transaction);
 
-                // 3. Lưu vào bảng Transactions
-                _context.Transactions.Add(transaction);
-                // 4. (Nâng cao) Cập nhật tổng tiền vào bảng Posts (Nếu Hào đã tạo bảng Posts)
-                var post = _context.Posts?.Find(model.PostId);
-                if (post != null)
-                {
-                    post.CurrentAmount += model.Amount;
-                }
-
-                _context.SaveChanges();
-
-                // 5. Chuyển hướng về trang lịch sử hoặc thông báo thành công
-                TempData["Message"] = "Quyên góp thành công! Cảm ơn bạn.";
-                return RedirectToAction("Index", "Dashboard");
+            // 4. Cập nhật tiền cho bài viết (Nếu đã tạo bảng Posts theo hướng dẫn trước)
+            var post = _context.Posts.FirstOrDefault(p => p.Id == model.PostId);
+            if (post != null)
+            {
+                post.CurrentAmount += model.Amount;
             }
 
-            return View(model);
+            // --- QUAN TRỌNG: LỆNH LƯU XUỐNG SQL SERVER ---
+            _context.SaveChanges(); 
 
+            // 5. Thành công -> Về Dashboard
+            TempData["Message"] = "Quyên góp thành công!";
+            return RedirectToAction("Index", "Dashboard");
         }
+        catch (Exception ex)
+        {
+            // Nếu lỗi Database (ví dụ sai khóa ngoại), in ra để sửa
+            ModelState.AddModelError("", "Lỗi lưu Database: " + ex.Message);
+        }
+    }
+    else 
+    {
+        // Debug: In lỗi ra cửa sổ Output của Visual Studio
+        var errors = ModelState.Values.SelectMany(v => v.Errors);
+        foreach(var error in errors) 
+        {
+            System.Diagnostics.Debug.WriteLine("Lỗi Validation: " + error.ErrorMessage);
+        }
+    }
+
+    // Nếu lỗi, quay lại trang TestDonate để nhập lại
+    return View("TestDonate", model);
+}
         // GET: /Donation/History
         public IActionResult History()
         {
@@ -64,5 +84,15 @@ namespace QuyenGopOnline.Controllers
 
             return View(transactions);
         }
+
+        // GET: /Donation/TestDonate?postId=1
+        [HttpGet]
+        public IActionResult TestDonate(int postId)
+        {
+            // Truyền postId vào ViewBag để dùng ở View
+            ViewBag.PostId = postId;
+            return View();
+        }
+
     }
 }

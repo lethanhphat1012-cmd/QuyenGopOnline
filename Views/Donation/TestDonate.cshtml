@@ -1,0 +1,27 @@
+@{
+    ViewData["Title"] = "Test Quyên Góp";
+    int postId = ViewBag.PostId != null ? (int)ViewBag.PostId : 0;
+}
+
+<h2>Test chức năng quyên góp cho bài viết #@postId</h2>
+
+<div class="row">
+    <div class="col-md-6">
+         <form asp-controller="Donation" asp-action="SubmitDonation" method="post">
+            <input type="hidden" name="PostId" value="@postId" />
+
+            <div class="mb-3">
+                <label class="form-label">Số tiền (VNĐ)</label>
+                <input type="number" name="Amount" class="form-control" placeholder="Nhập số tiền > 1000" required />
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Lời nhắn (Test)</label>
+                <textarea name="Note" class="form-control">Test quyên góp từ Leader Phát</textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Gửi Quyên Góp Test</button>
+        </form>
+        <div asp-validation-summary="All" class="text-danger"></div>
+    </div>
+</div>

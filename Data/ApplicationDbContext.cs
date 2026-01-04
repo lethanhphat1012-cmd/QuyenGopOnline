@@ -14,5 +14,21 @@ namespace QuyenGopOnline.Data
         public DbSet<User> Users { get; set; }
         // Sau này Huy và Hào sẽ thêm DbSet cho Bài viết và Giao dịch ở đây
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Post> Posts { get; set; } // Thêm dòng này vào
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            // Chỉ định kiểu dữ liệu tiền tệ cho SQL Server (18 số, 2 số lẻ)
+            modelBuilder.Entity<Post>()
+                .Property(p => p.CurrentAmount)
+                .HasColumnType("decimal(18,2)");
+
+            modelBuilder.Entity<Transaction>()
+                .Property(t => t.Amount)
+                .HasColumnType("decimal(18,2)");
+        }
     }
+
+    
 }

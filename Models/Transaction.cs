@@ -1,4 +1,6 @@
-﻿public class Transaction
+﻿namespace QuyenGopOnline.Models
+{
+public class Transaction
 {
     public int Id { get; set; }
     public int UserId { get; set; } // Ai quyên góp
@@ -9,4 +11,5 @@
 
     // Liên kết (Navigation Properties)
     public virtual User User { get; set; }
+}
 }
