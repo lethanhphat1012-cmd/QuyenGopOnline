@@ -1,0 +1,27 @@
+@model QuyenGopOnline.Models.DonationViewModel
+
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3>Quyên góp cho: @ViewBag.PostTitle</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitDonation" method="post">
+                <input type="hidden" asp-for="PostId" />
+                
+                <div class="mb-3">
+                    <label class="form-label">Số tiền quyên góp (VNĐ)</label>
+                    <input asp-for="Amount" class="form-control" type="number" placeholder="Nhập số tiền..." />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Lời nhắn</label>
+                    <textarea asp-for="Note" class="form-control" rows="3"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Gửi quyên góp</button>
+            </form>
+        </div>
+    </div>
+</div>

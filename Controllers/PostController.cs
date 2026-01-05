@@ -21,19 +21,48 @@ namespace QuyenGopOnline.Controllers
 
         // 1. Xem danh sách bài viết dành cho Admin
         public IActionResult AdminIndex()
-        {
-            var posts = _context.Posts.OrderByDescending(p => p.CreatedDate).ToList();
-            return View(posts);
-        }
+{
+    // Lấy danh sách bài viết kèm theo danh sách giao dịch liên quan
+    var posts = _context.Posts.ToList();
+    
+    foreach (var item in posts)
+    {
+        // Tính tổng tiền từ bảng Transactions dựa trên PostId
+        // Thêm .AsEnumerable() để ép nó tính toán chính xác
+        var total = _context.Transactions
+                            .Where(t => t.PostId == item.Id)
+                            .AsEnumerable() 
+                            .Sum(t => t.Amount);
+                            
+        item.CurrentAmount = total;
+    }
+    
+    return View(posts);
+}
 
         // 2. Dashboard tổng quan
         public IActionResult Dashboard()
-        {
-            ViewBag.TotalPosts = _context.Posts.Count();
-            ViewBag.TotalAmount = _context.Posts.Sum(p => p.CurrentAmount);
-            ViewBag.TotalUsers = _context.Users.Count();
-            return View();
-        }
+{
+    // 1. Tính toán dữ liệu
+    var totalAmount = _context.Transactions.Sum(t => (decimal?)t.Amount) ?? 0;
+    var postCount = _context.Posts.Count();
+    var userCount = _context.Users.Count();
+    var transactionCount = _context.Transactions.Count();
+    var recentUsers = _context.Users.OrderByDescending(u => u.Id).Take(5).ToList();
+
+    // 2. Nạp vào ViewModel (Đảm bảo class DashboardViewModel đã có đủ các property này)
+    var model = new DashboardViewModel
+    {
+        TotalDonations = totalAmount, // Kiểm tra xem tên biến trong Model là gì
+        TotalPosts = postCount,
+        TotalUsers = userCount,
+        TotalTransactions = transactionCount,
+        RecentUsers = recentUsers
+    };
+
+    return View(model); // Truyền model sang View
+}
+
 
         // 3. Trang tạo bài viết mới (GET)
         public IActionResult Create()
