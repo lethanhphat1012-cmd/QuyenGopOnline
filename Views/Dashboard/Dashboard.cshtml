@@ -1,0 +1,86 @@
+﻿<div class="container mt-4">
+
+    <h2 class="mb-4">Hệ thống quản trị Quyên Góp</h2>
+
+
+
+    <div class="row">
+
+        <div class="col-md-4">
+
+            <div class="card bg-primary text-white mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Tổng số bài viết</h5>
+
+                    <h3>@ViewBag.TotalPosts</h3>
+
+                </div>
+
+                <div class="card-footer d-flex align-items-center justify-content-between">
+
+                    <a class="small text-white stretched-link" asp-action="AdminIndex">Xem chi tiết</a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-4">
+
+            <div class="card bg-success text-white mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Tổng tiền quyên góp</h5>
+
+                    <h3>@ViewBag.TotalAmount.ToString("N0") đ</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="col-md-4">
+
+            <div class="card bg-warning text-white mb-4">
+
+                <div class="card-body">
+
+                    <h5 class="card-title">Người dùng hệ thống</h5>
+
+                    <h3>@ViewBag.TotalUsers</h3>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="list-group">
+
+        <a asp-action="AdminIndex" class="list-group-item list-group-item-action">
+
+            <i class="fas fa-edit me-2"></i> Quản lý danh sách bài viết
+
+        </a>
+
+        <a asp-controller="Donation" asp-action="History" class="list-group-item list-group-item-action">
+
+            <i class="fas fa-history me-2"></i> Xem lịch sử giao dịch toàn hệ thống
+
+        </a>
+
+    </div>
+</div>

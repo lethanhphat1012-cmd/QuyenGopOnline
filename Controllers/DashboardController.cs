@@ -29,5 +29,18 @@ namespace QuyenGopOnline.Controllers
 
             return View(model);
         }
+        public IActionResult Dashboard()
+
+        {
+
+            ViewBag.TotalPosts = _context.Posts.Count();
+
+            ViewBag.TotalAmount = _context.Posts.Sum(p => p.CurrentAmount);
+
+            ViewBag.TotalUsers = _context.Users.Count();
+
+            return View();
+
+        }
     }
 }

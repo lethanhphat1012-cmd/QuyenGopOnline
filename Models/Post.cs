@@ -12,6 +12,11 @@ namespace QuyenGopOnline.Models
 
         [Display(Name = "Mô tả hoàn cảnh")]
         public string Description { get; set; } = "";
+        public string ImageUrl { get; set; } = "/images/default-post.jpg";
+
+        [NotMapped]
+        [Display(Name = "Chọn ảnh từ máy tính")]
+        public IFormFile? ImageFile { get; set; } // Chứa file upload
 
         [Display(Name = "Link ảnh minh họa")]
         public string ImageUrl { get; set; } = "https://via.placeholder.com/300x200";
