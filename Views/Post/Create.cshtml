@@ -1,0 +1,20 @@
+@model QuyenGopOnline.Models.Post
+
+<form asp-action="Create" method="post" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label asp-for="Title" class="form-label"></label>
+        <input asp-for="Title" class="form-control" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ImageFile" class="form-label"></label>
+        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="TargetAmount" class="form-label"></label>
+        <input asp-for="TargetAmount" type="number" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">??ng bài vi?t</button>
+</form>
