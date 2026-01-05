@@ -85,14 +85,6 @@ public IActionResult SubmitDonation(DonationViewModel model)
             return View(transactions);
         }
 
-        // GET: /Donation/TestDonate?postId=1
-        [HttpGet]
-        public IActionResult TestDonate(int postId)
-        {
-            // Truyền postId vào ViewBag để dùng ở View
-            ViewBag.PostId = postId;
-            return View();
-        }
-
+        
     }
 }
