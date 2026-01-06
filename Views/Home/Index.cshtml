@@ -1,34 +1,70 @@
 ﻿@model IEnumerable<QuyenGopOnline.Models.Post>
 
-    <div class="container">
-        <h2 class="text-center my-4">CÁC HOÀN CẢNH CẦN GIÚP ĐỠ</h2>
-        <div class="row">
-            @foreach (var item in Model)
-{
-// Tính toán phần trăm tiến độ
-var percent = item.TargetAmount > 0 ? (item.CurrentAmount / item.TargetAmount * 100) : 0;
+@{
+    ViewData["Title"] = "Trang Chủ - Chung Tay Góp Sức";
+}
 
-            <div class="col-md-4 mb-4">
-                <div class="card h-100 border-0 shadow-sm">
-                    <img src="@item.ImageUrl" class="card-img-top" style="height: 200px; object-fit: cover;">
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Title</h5>
-                        <p class="card-text text-muted">@item.Description.Substring(0, Math.Min(item.Description.Length, 100))...</p>
+@section Styles {
+    <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+}
 
-                        <div class="progress mb-2" style="height: 10px;">
-                            <div class="progress-bar bg-warning" style="width: @percent%"></div>
-                        </div>
+<header class="hero-section text-white text-center d-flex align-items-center">
+    <div class="container py-5">
+        <h1 class="display-3 fw-bold mb-3">Trao Gửi Yêu Thương</h1>
+        <p class="lead mb-4">Mỗi đóng góp của bạn là một niềm hy vọng mới cho những mảnh đời khó khăn.</p>
+        <a href="#campaigns" class="btn btn-warning btn-lg px-4 fw-bold shadow">Khám Phá Ngay</a>
+    </div>
+</header>
 
-                        <div class="d-flex justify-content-between small fw-bold">
-                            <span>Đã có: @item.CurrentAmount.ToString("N0")đ</span>
-                            <span>Mục tiêu: @item.TargetAmount.ToString("N0")đ</span>
+<main class="container my-5" id="campaigns">
+    <div class="text-center mb-5">
+        <h2 class="section-title fw-bold">CÁC HOÀN CẢNH CẦN GIÚP ĐỠ</h2>
+        <div class="title-underline mx-auto"></div>
+    </div>
+
+    <div class="row g-4">
+        @foreach (var item in Model)
+        {
+            var percent = item.TargetAmount > 0 ? (item.CurrentAmount / item.TargetAmount * 100) : 0;
+            
+            <div class="col-lg-4 col-md-6">
+                <div class="card h-100 donation-card border-0 shadow-sm overflow-hidden">
+                    <div class="position-relative">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title">
+                        <span class="badge position-absolute top-0 start-0 m-3 @(item.IsActive ? "bg-success" : "bg-secondary")">
+                            @(item.IsActive ? "Đang kêu gọi" : "Đã đóng")
+                        </span>
+                    </div>
+                    
+                    <div class="card-body p-4">
+                        <h5 class="card-title fw-bold text-dark mb-3">@item.Title</h5>
+                        <p class="card-text text-muted mb-4">
+                            @(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                        </p>
+
+                        <div class="stats-box mb-3">
+                            <div class="progress rounded-pill mb-2" style="height: 12px;">
+                                <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
+                                     style="width: @percent%" role="progressbar"></div>
+                            </div>
+                            <div class="d-flex justify-content-between small fw-bold mt-1">
+                                <span class="text-primary">@item.CurrentAmount.ToString("N0")đ</span>
+                                <span class="text-muted">Mục tiêu: @item.TargetAmount.ToString("N0")đ</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <a href="/Donation/TestDonate?postId=@item.Id" class="btn btn-danger w-100">QUYÊN GÓP NGAY</a>
+
+                    <div class="card-footer bg-white border-top-0 p-4 pt-0">
+                        <a href="/Donation/TestDonate?postId=@item.Id" class="btn btn-donate w-100 fw-bold py-2">
+                            QUYÊN GÓP NGAY
+                        </a>
                     </div>
                 </div>
             </div>
-}
-        </div>
+        }
     </div>
+</main>
+
+@section Scripts {
+    <script src="~/js/home-index.js" asp-append-version="true"></script>
+}
