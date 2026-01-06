@@ -1,4 +1,7 @@
+using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema; // Cần thiết cho [NotMapped]
+using Microsoft.AspNetCore.Http; // Cần thiết cho IFormFile
 
 namespace QuyenGopOnline.Models
 {
@@ -12,14 +15,13 @@ namespace QuyenGopOnline.Models
 
         [Display(Name = "Mô tả hoàn cảnh")]
         public string Description { get; set; } = "";
+
+        [Display(Name = "Đường dẫn ảnh")]
         public string ImageUrl { get; set; } = "/images/default-post.jpg";
 
-        [NotMapped]
+        [NotMapped] // Field này chỉ dùng để nhận file, không tạo cột trong Database
         [Display(Name = "Chọn ảnh từ máy tính")]
-        public IFormFile? ImageFile { get; set; } // Chứa file upload
-
-        [Display(Name = "Link ảnh minh họa")]
-        public string ImageUrl { get; set; } = "https://via.placeholder.com/300x200";
+        public IFormFile? ImageFile { get; set; } 
 
         [Required(ErrorMessage = "Vui lòng nhập số tiền cần kêu gọi")]
         [Range(1000, double.MaxValue, ErrorMessage = "Số tiền mục tiêu phải lớn hơn 1,000đ")]

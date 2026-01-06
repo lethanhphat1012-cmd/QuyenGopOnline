@@ -46,6 +46,7 @@ public IActionResult SubmitDonation(DonationViewModel model)
             if (post != null)
             {
                 post.CurrentAmount += model.Amount;
+                _context.Posts.Update(post);
             }
 
             // --- QUAN TRỌNG: LỆNH LƯU XUỐNG SQL SERVER ---
@@ -53,7 +54,8 @@ public IActionResult SubmitDonation(DonationViewModel model)
 
             // 5. Thành công -> Về Dashboard
             TempData["Message"] = "Quyên góp thành công!";
-            return RedirectToAction("Index", "Dashboard");
+            // Trong hàm SubmitDonation
+            return RedirectToAction("Dashboard", "Post");
         }
         catch (Exception ex)
         {
@@ -86,14 +88,23 @@ public IActionResult SubmitDonation(DonationViewModel model)
             return View(transactions);
         }
 
-        // GET: /Donation/TestDonate?postId=1
         [HttpGet]
-        public IActionResult TestDonate(int postId)
-        {
-            // Truyền postId vào ViewBag để dùng ở View
-            ViewBag.PostId = postId;
-            return View();
-        }
+public IActionResult TestDonate(int postId)
+{
+    // Tạo một model trống và gán PostId vào để Form biết đang quyên góp cho ai
+    var model = new DonationViewModel
+    {
+        PostId = postId
+    };
+    
+    // Kiểm tra xem bài viết có tồn tại không (để tránh lỗi)
+    var post = _context.Posts.Find(postId);
+    if (post == null) return NotFound("Bài viết không tồn tại");
 
+    ViewBag.PostTitle = post.Title;
+    return View(model);
+}
+
+        
     }
 }

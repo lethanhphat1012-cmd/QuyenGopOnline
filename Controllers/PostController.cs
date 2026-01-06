@@ -2,143 +2,139 @@
 using QuyenGopOnline.Data;
 using QuyenGopOnline.Models;
 using System.IO;
-using Microsoft.AspNetCore.Hosting; // Thêm để lấy đường dẫn thư mục web
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
+
 namespace QuyenGopOnline.Controllers
 {
     public class PostController : Controller
     {
         private readonly ApplicationDbContext _context;
-        // Trong class PostController
         private readonly IWebHostEnvironment _hostEnvironment;
 
+        // CHỈ CẦN 1 CONSTRUCTOR DUY NHẤT
         public PostController(ApplicationDbContext context, IWebHostEnvironment hostEnvironment)
         {
-        public PostController(ApplicationDbContext context)
-        {
             _context = context;
+            _hostEnvironment = hostEnvironment;
         }
 
         // 1. Xem danh sách bài viết dành cho Admin
         public IActionResult AdminIndex()
-        {
-            var posts = _context.Posts.OrderByDescending(p => p.CreatedDate).ToList();
-            return View(posts);
-        }
+{
+    // Lấy danh sách bài viết kèm theo danh sách giao dịch liên quan
+    var posts = _context.Posts.ToList();
+    
+    foreach (var item in posts)
+    {
+        // Tính tổng tiền từ bảng Transactions dựa trên PostId
+        // Thêm .AsEnumerable() để ép nó tính toán chính xác
+        var total = _context.Transactions
+                            .Where(t => t.PostId == item.Id)
+                            .AsEnumerable() 
+                            .Sum(t => t.Amount);
+                            
+        item.CurrentAmount = total;
+    }
+    
+    return View(posts);
+}
 
-        // 2. Trang tạo bài viết mới (GET)
+        // 2. Dashboard tổng quan
+        public IActionResult Dashboard()
+{
+    // 1. Tính toán dữ liệu
+    var totalAmount = _context.Transactions.Sum(t => (decimal?)t.Amount) ?? 0;
+    var postCount = _context.Posts.Count();
+    var userCount = _context.Users.Count();
+    var transactionCount = _context.Transactions.Count();
+    var recentUsers = _context.Users.OrderByDescending(u => u.Id).Take(5).ToList();
+
+    // 2. Nạp vào ViewModel (Đảm bảo class DashboardViewModel đã có đủ các property này)
+    var model = new DashboardViewModel
+    {
+        TotalDonations = totalAmount, // Kiểm tra xem tên biến trong Model là gì
+        TotalPosts = postCount,
+        TotalUsers = userCount,
+        TotalTransactions = transactionCount,
+        RecentUsers = recentUsers
+    };
+
+    return View(model); // Truyền model sang View
+}
+
+
+        // 3. Trang tạo bài viết mới (GET)
         public IActionResult Create()
         {
             return View();
         }
 
-        // 3. Xử lý lưu bài viết mới (POST)
+        // 4. Xử lý lưu bài viết mới có Upload ảnh (POST)
         [HttpPost]
-        public IActionResult Create(Post post)
+        public async Task<IActionResult> Create(Post post)
         {
             if (ModelState.IsValid)
             {
+                if (post.ImageFile != null)
+                {
+                    string wwwRootPath = _hostEnvironment.WebRootPath;
+                    string fileName = Guid.NewGuid().ToString() + Path.GetExtension(post.ImageFile.FileName);
+                    string path = Path.Combine(wwwRootPath + "/images/", fileName);
+
+                    using (var fileStream = new FileStream(path, FileMode.Create))
+                    {
+                        await post.ImageFile.CopyToAsync(fileStream);
+                    }
+                    post.ImageUrl = "/images/" + fileName;
+                }
+
                 _context.Posts.Add(post);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
                 return RedirectToAction("AdminIndex");
             }
             return View(post);
         }
-    }
-}
-_context = context;
-_hostEnvironment = hostEnvironment;
-}
 
-[HttpPost]
-public async Task<IActionResult> Create(Post post)
-{
-    if (ModelState.IsValid)
-    {
-        // Xử lý Upload ảnh
-        if (post.ImageFile != null)
+        // 5. Trang Chỉnh sửa (GET)
+        public IActionResult Edit(int id)
         {
-            // 1. Tạo đường dẫn thư mục lưu ảnh: wwwroot/images
-            string wwwRootPath = _hostEnvironment.WebRootPath;
-            string fileName = Guid.NewGuid().ToString() + Path.GetExtension(post.ImageFile.FileName);
-            string path = Path.Combine(wwwRootPath + "/images/", fileName);
-
-            // 2. Lưu file vào thư mục
-            using (var fileStream = new FileStream(path, FileMode.Create))
-            {
-                await post.ImageFile.CopyToAsync(fileStream);
-            }
-
-            // 3. Lưu đường dẫn vào database
-            post.ImageUrl = "/images/" + fileName;
+            var post = _context.Posts.Find(id);
+            if (post == null) return NotFound();
+            return View(post);
         }
 
-        _context.Posts.Add(post);
-        await _context.SaveChangesAsync();
-        return RedirectToAction("AdminIndex");
+        // 6. Xử lý Chỉnh sửa (POST)
+        [HttpPost]
+        public async Task<IActionResult> Edit(Post post)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _context.Update(post);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_context.Posts.Any(e => e.Id == post.Id)) return NotFound();
+                    else throw;
+                }
+                return RedirectToAction("AdminIndex");
+            }
+            return View(post);
+        }
+
+        // 7. Xóa bài viết
+        public IActionResult Delete(int id)
+        {
+            var post = _context.Posts.Find(id);
+            if (post != null)
+            {
+                _context.Posts.Remove(post);
+                _context.SaveChanges();
+            }
+            return RedirectToAction("AdminIndex");
+        }
     }
-    return View(post);
-}
-// 1. Trang Chỉnh sửa (GET)
-
-public IActionResult Edit(int id)
-
-{
-
-    var post = _context.Posts.Find(id);
-
-    if (post == null) return NotFound();
-
-    return View(post);
-
-}
-
-
-
-// 2. Xử lý Chỉnh sửa (POST)
-
-[HttpPost]
-
-public async Task<IActionResult> Edit(Post post)
-
-{
-
-    if (ModelState.IsValid)
-
-    {
-
-        // Nếu có upload ảnh mới thì xử lý giống hàm Create, 
-
-        // nếu không thì giữ nguyên ImageUrl cũ.
-
-        _context.Update(post);
-
-        await _context.SaveChangesAsync();
-
-        return RedirectToAction("AdminIndex");
-
-    }
-
-    return View(post);
-
-}
-// 3. Xóa bài viết
-
-public IActionResult Delete(int id)
-
-{
-
-    var post = _context.Posts.Find(id);
-
-    if (post != null)
-
-    {
-
-        _context.Posts.Remove(post);
-
-        _context.SaveChanges();
-
-    }
-
-    return RedirectToAction("AdminIndex");
-
 }

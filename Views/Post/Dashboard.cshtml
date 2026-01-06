@@ -1,0 +1,123 @@
+﻿@model QuyenGopOnline.Models.DashboardViewModel
+
+@{
+    ViewData["Title"] = "Bảng điều khiển quản trị";
+}
+
+<div class="container-fluid py-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark"><i class="fas fa-chart-line me-2"></i>Hệ Thống Quản Trị</h2>
+        <span class="badge bg-light text-dark border p-2">Cập nhật: @DateTime.Now.ToString("dd/MM/yyyy HH:mm")</span>
+    </div>
+
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-uppercase small mb-1 fw-bold">Tổng tiền quyên góp</p>
+                            <h2 class="mb-0">@Model.TotalDonations.ToString("N0") <small>đ</small></h2>
+                        </div>
+                        <div class="fs-1 opacity-50"><i class="fas fa-hand-holding-usd"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-primary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-uppercase small mb-1 fw-bold">Bài viết kêu gọi</p>
+                            <h2 class="mb-0">@Model.TotalPosts</h2>
+                        </div>
+                        <div class="fs-1 opacity-50"><i class="fas fa-newspaper"></i></div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent border-0">
+                    <a asp-action="AdminIndex" class="text-white text-decoration-none small">Xem chi tiết <i class="fas fa-arrow-right ms-1"></i></a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm bg-warning text-dark h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <p class="text-uppercase small mb-1 fw-bold">Người dùng hệ thống</p>
+                            <h2 class="mb-0">@Model.TotalUsers</h2>
+                        </div>
+                        <div class="fs-1 opacity-50"><i class="fas fa-users"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold text-primary">Thành viên mới đăng ký</h5>
+                    <button class="btn btn-sm btn-outline-primary">Tất cả</button>
+                </div>
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Họ Tên</th>
+                                    <th>Email</th>
+                                    <th class="text-center">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var user in Model.RecentUsers ?? new List<User>())
+                                {
+                                    <tr>
+                                        <td class="ps-4">
+                                            <div class="d-flex align-items-center">
+                                                <div class="avatar-sm bg-info text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width:35px; height:35px;">
+                                                    @user.FullName.Substring(0,1)
+                                                </div>
+                                                <span class="fw-bold">@user.FullName</span>
+                                            </div>
+                                        </td>
+                                        <td>@user.Email</td>
+                                        <td class="text-center">
+                                            <button class="btn btn-sm btn-light border">Chi tiết</button>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-white py-3">
+                    <h5 class="mb-0 fw-bold">Thao tác nhanh</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a asp-action="Create" class="btn btn-primary text-start px-3 py-2">
+                            <i class="fas fa-plus-circle me-2"></i>Thêm bài viết mới
+                        </a>
+                        <a asp-controller="Donation" asp-action="History" class="btn btn-outline-secondary text-start px-3 py-2">
+                            <i class="fas fa-history me-2"></i>Lịch sử quyên góp
+                        </a>
+                        <a asp-action="AdminIndex" class="btn btn-outline-info text-start px-3 py-2">
+                            <i class="fas fa-tasks me-2"></i>Quản lý bài viết
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,27 +1,27 @@
-@{
-    ViewData["Title"] = "Test Quyên Góp";
-    int postId = ViewBag.PostId != null ? (int)ViewBag.PostId : 0;
-}
+@model QuyenGopOnline.Models.DonationViewModel
 
-<h2>Test chức năng quyên góp cho bài viết #@postId</h2>
+<div class="container mt-5">
+    <div class="card shadow">
+        <div class="card-header bg-success text-white">
+            <h3>Quyên góp cho: @ViewBag.PostTitle</h3>
+        </div>
+        <div class="card-body">
+            <form asp-action="SubmitDonation" method="post">
+                <input type="hidden" asp-for="PostId" />
+                
+                <div class="mb-3">
+                    <label class="form-label">Số tiền quyên góp (VNĐ)</label>
+                    <input asp-for="Amount" class="form-control" type="number" placeholder="Nhập số tiền..." />
+                    <span asp-validation-for="Amount" class="text-danger"></span>
+                </div>
 
-<div class="row">
-    <div class="col-md-6">
-         <form asp-controller="Donation" asp-action="SubmitDonation" method="post">
-            <input type="hidden" name="PostId" value="@postId" />
+                <div class="mb-3">
+                    <label class="form-label">Lời nhắn</label>
+                    <textarea asp-for="Note" class="form-control" rows="3"></textarea>
+                </div>
 
-            <div class="mb-3">
-                <label class="form-label">Số tiền (VNĐ)</label>
-                <input type="number" name="Amount" class="form-control" placeholder="Nhập số tiền > 1000" required />
-            </div>
-
-            <div class="mb-3">
-                <label class="form-label">Lời nhắn (Test)</label>
-                <textarea name="Note" class="form-control">Test quyên góp từ Leader Phát</textarea>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Gửi Quyên Góp Test</button>
-        </form>
-        <div asp-validation-summary="All" class="text-danger"></div>
+                <button type="submit" class="btn btn-primary w-100">Gửi quyên góp</button>
+            </form>
+        </div>
     </div>
 </div>
