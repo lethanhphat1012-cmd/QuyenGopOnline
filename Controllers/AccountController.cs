@@ -37,7 +37,7 @@ namespace QuyenGopOnline.Controllers
                     // Tùy vào Role (Admin/User) để điều hướng
                     if (user.Role == "Admin")
                     {
-                        return RedirectToAction("Index", "Dashboard");
+                        return RedirectToAction("Dashboard", "Post");
                     }
                     else
                     {
