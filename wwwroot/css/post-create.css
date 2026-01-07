@@ -1,0 +1,104 @@
+/* Container trung tâm */
+.create-post-wrapper {
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.create-card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    overflow: hidden;
+    padding: 40px;
+}
+
+.form-title {
+    font-weight: 700;
+    color: #2d3436;
+    margin-bottom: 30px;
+    text-align: center;
+    position: relative;
+}
+
+.form-title::after {
+    content: '';
+    display: block;
+    width: 50px;
+    height: 4px;
+    background: #00b894;
+    margin: 10px auto;
+    border-radius: 2px;
+}
+
+/* Tùy chỉnh Input */
+.custom-form-group {
+    margin-bottom: 25px;
+}
+
+.custom-form-group label {
+    font-weight: 600;
+    color: #636e72;
+    margin-bottom: 8px;
+    display: block;
+    font-size: 0.9rem;
+}
+
+.custom-input {
+    border: 2px solid #f1f3f5;
+    border-radius: 12px;
+    padding: 12px 15px;
+    transition: all 0.3s;
+    background-color: #f8f9fa;
+}
+
+.custom-input:focus {
+    border-color: #00b894;
+    background-color: #fff;
+    box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.1);
+    outline: none;
+}
+
+/* Vùng Upload ảnh */
+.image-upload-wrapper {
+    border: 2px dashed #dfe6e9;
+    border-radius: 15px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    background: #fff;
+}
+
+.image-upload-wrapper:hover {
+    border-color: #00b894;
+    background: #f0fff4;
+}
+
+#image-preview {
+    max-width: 100%;
+    border-radius: 10px;
+    margin-top: 15px;
+    display: none;
+}
+
+/* Nút Submit */
+.btn-submit-post {
+    width: 100%;
+    background: linear-gradient(45deg, #00b894, #00cec9);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    box-shadow: 0 10px 20px rgba(0, 184, 148, 0.2);
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+.btn-submit-post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 15px 25px rgba(0, 184, 148, 0.3);
+    color: white;
+}

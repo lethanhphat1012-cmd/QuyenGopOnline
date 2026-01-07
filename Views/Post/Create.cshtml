@@ -1,20 +1,59 @@
 @model QuyenGopOnline.Models.Post
 
-<form asp-action="Create" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
-        <label asp-for="Title" class="form-label"></label>
-        <input asp-for="Title" class="form-control" />
-    </div>
+@{
+    ViewData["Title"] = "Thêm bài viết kêu gọi";
+}
 
-    <div class="mb-3">
-        <label asp-for="ImageFile" class="form-label"></label>
-        <input asp-for="ImageFile" type="file" class="form-control" accept="image/*" />
-    </div>
+@section Styles {
+    <link rel="stylesheet" href="~/css/post-create.css" asp-append-version="true" />
+}
 
-    <div class="mb-3">
-        <label asp-for="TargetAmount" class="form-label"></label>
-        <input asp-for="TargetAmount" type="number" class="form-control" />
-    </div>
+<div class="create-post-wrapper">
+    <div class="create-card">
+        <h2 class="form-title">Tạo Chiến Dịch Mới</h2>
+        
+        <form asp-action="Create" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <button type="submit" class="btn btn-primary">??ng b�i vi?t</button>
-</form>
+            <div class="custom-form-group">
+                <label asp-for="Title"><i class="fa-solid fa-heading me-2"></i>Tiêu đề bài viết</label>
+                <input asp-for="Title" class="form-control custom-input" placeholder="Nhập tiêu đề đầy đủ cảm xúc..." />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+
+            <div class="custom-form-group">
+                <label asp-for="TargetAmount"><i class="fa-solid fa-coins me-2"></i>Số tiền mục tiêu (VNĐ)</label>
+                <input asp-for="TargetAmount" type="number" class="form-control custom-input" placeholder="Ví dụ: 50,000,000" />
+                <span asp-validation-for="TargetAmount" class="text-danger small"></span>
+            </div>
+
+            <div class="custom-form-group">
+                <label><i class="fa-solid fa-image me-2"></i>Ảnh bìa chiến dịch</label>
+                <div class="image-upload-wrapper" onclick="document.getElementById('ImageFile').click()">
+                    <div class="upload-text">
+                        <i class="fa-solid fa-cloud-arrow-up fa-2x mb-2 text-primary"></i>
+                        <p class="mb-0">Kéo thả hoặc nhấn để chọn ảnh</p>
+                        <small class="text-muted">(Định dạng: JPG, PNG, WEBP)</small>
+                    </div>
+                    <input asp-for="ImageFile" type="file" class="d-none" accept="image/*" id="ImageFile" />
+                    <img id="image-preview" src="#" alt="Xem trước ảnh" />
+                </div>
+                <span asp-validation-for="ImageFile" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex gap-2 mt-4">
+                <a asp-action="AdminIndex" class="btn btn-light border" style="border-radius: 12px; padding: 12px 25px;">
+                    Quay lại
+                </a>
+                <button type="submit" class="btn btn-submit-post">
+                    <i class="fa-solid fa-paper-plane me-2"></i>Đăng bài viết ngay
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/post-create.js" asp-append-version="true"></script>
+}

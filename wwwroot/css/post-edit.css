@@ -1,0 +1,53 @@
+.edit-post-wrapper {
+    max-width: 700px;
+    margin: 40px auto;
+}
+
+.edit-card {
+    border: none;
+    border-radius: 20px;
+    background: #ffffff;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+    padding: 40px;
+}
+
+.current-image-label {
+    font-size: 0.85rem;
+    color: #636e72;
+    margin-bottom: 10px;
+    display: block;
+}
+
+.current-image-preview {
+    width: 100%;
+    max-height: 200px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    border: 2px solid #f1f3f5;
+}
+
+.btn-update-post {
+    width: 100%;
+    background: linear-gradient(45deg, #0984e3, #74b9ff);
+    color: white;
+    border: none;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: 700;
+    transition: all 0.3s;
+}
+
+.btn-update-post:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(9, 132, 227, 0.3);
+    color: white;
+}
+
+/* Tận dụng lại style của Create cho input */
+.custom-input {
+    border: 2px solid #f1f3f5;
+    border-radius: 12px;
+    padding: 12px 15px;
+    background-color: #f8f9fa;
+}

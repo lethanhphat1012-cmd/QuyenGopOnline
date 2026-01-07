@@ -106,35 +106,99 @@ namespace QuyenGopOnline.Controllers
 
         // 6. Xử lý Chỉnh sửa (POST)
         [HttpPost]
-        public async Task<IActionResult> Edit(Post post)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, Post post)
         {
+            if (id != post.Id) return NotFound();
+
             if (ModelState.IsValid)
             {
                 try
                 {
+                    // 1. Lấy dữ liệu gốc từ Database (Tránh mất CurrentAmount và CreatedDate)
+                    var existingPost = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+                    if (existingPost == null) return NotFound();
+
+                    // 2. Xử lý ImageFile nếu Admin có chọn ảnh mới
+                    if (post.ImageFile != null)
+                    {
+                        string wwwRootPath = _hostEnvironment.WebRootPath;
+                        string fileName = Guid.NewGuid().ToString() + Path.GetExtension(post.ImageFile.FileName);
+                        string path = Path.Combine(wwwRootPath, "images", fileName);
+
+                        using (var fileStream = new FileStream(path, FileMode.Create))
+                        {
+                            await post.ImageFile.CopyToAsync(fileStream);
+                        }
+                        // Gán link ảnh mới
+                        post.ImageUrl = "/images/" + fileName;
+                    }
+                    else
+                    {
+                        // Nếu không chọn ảnh mới, giữ nguyên ảnh cũ từ database
+                        post.ImageUrl = existingPost.ImageUrl;
+                    }
+
+                    // 3. Giữ nguyên các giá trị không được phép sửa trong trang Edit (như số tiền hiện có)
+                    post.CurrentAmount = existingPost.CurrentAmount;
+                    post.CreatedDate = existingPost.CreatedDate;
+
+                    // 4. Cập nhật vào DB
                     _context.Update(post);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(AdminIndex));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!_context.Posts.Any(e => e.Id == post.Id)) return NotFound();
+                    if (!PostExists(post.Id)) return NotFound();
                     else throw;
                 }
-                return RedirectToAction("AdminIndex");
             }
             return View(post);
         }
+        private bool PostExists(int id)
+        {
+            return _context.Posts.Any(e => e.Id == id);
+        }
 
         // 7. Xóa bài viết
-        public IActionResult Delete(int id)
+       // GET: Post/Details/5
+        public async Task<IActionResult> Details(int? id)
         {
-            var post = _context.Posts.Find(id);
+            if (id == null) return NotFound();
+
+            var post = await _context.Posts.FirstOrDefaultAsync(m => m.Id == id);
+            
+            if (post == null) return NotFound();
+
+            // Nếu CurrentAmount không tự cập nhật, hãy tính trực tiếp từ bảng Transactions
+            post.CurrentAmount = await _context.Transactions
+                                        .Where(t => t.PostId == id)
+                                        .SumAsync(t => t.Amount);
+
+            return View(post);
+        }
+
+// POST: Post/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var post = await _context.Posts.FindAsync(id);
             if (post != null)
             {
+                // Xóa file ảnh trong thư mục wwwroot nếu cần
+                if (!string.IsNullOrEmpty(post.ImageUrl))
+                {
+                    var imagePath = Path.Combine(_hostEnvironment.WebRootPath, post.ImageUrl.TrimStart('/'));
+                    if (System.IO.File.Exists(imagePath)) System.IO.File.Delete(imagePath);
+                }
+
                 _context.Posts.Remove(post);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
+                return Json(new { success = true, message = "Đã xóa bài viết thành công!" });
             }
-            return RedirectToAction("AdminIndex");
+            return Json(new { success = false, message = "Lỗi khi xóa bài viết." });
         }
+
     }
 }

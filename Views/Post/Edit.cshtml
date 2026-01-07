@@ -1,0 +1,67 @@
+@model QuyenGopOnline.Models.Post
+
+@{
+    ViewData["Title"] = "Chỉnh sửa chiến dịch";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/post-create.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/post-edit.css" asp-append-version="true" />
+}
+
+<div class="edit-post-wrapper">
+    <div class="edit-card">
+        <h2 class="form-title text-center fw-bold" style="color: #0984e3;">Cập Nhật Chiến Dịch</h2>
+        
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+            
+            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="ImageUrl" />
+
+            <div class="custom-form-group mb-4">
+                <label asp-for="Title" class="fw-bold mb-2">Tiêu đề bài viết</label>
+                <input asp-for="Title" class="form-control custom-input" />
+                <span asp-validation-for="Title" class="text-danger small"></span>
+            </div>
+
+            <div class="custom-form-group mb-4">
+                <label asp-for="TargetAmount" class="fw-bold mb-2">Mục tiêu (VNĐ)</label>
+                <input asp-for="TargetAmount" type="number" class="form-control custom-input" />
+                <span asp-validation-for="TargetAmount" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label class="current-image-label"><i class="fa-solid fa-images me-2"></i>Ảnh hiện tại</label>
+                <img src="@Model.ImageUrl" class="current-image-preview shadow-sm" alt="Current image" />
+                
+                <label class="fw-bold mb-2">Thay đổi ảnh mới (Nếu có)</label>
+                <div class="image-upload-wrapper" onclick="document.getElementById('ImageFile').click()" style="padding: 15px; border-style: dashed;">
+                    <div class="upload-text">
+                        <i class="fa-solid fa-upload text-primary mb-2"></i>
+                        <p class="small mb-0 text-muted">Nhấn để chọn ảnh mới thay thế</p>
+                    </div>
+                    <input asp-for="ImageFile" type="file" class="d-none" id="ImageFile" accept="image/*" />
+                    <img id="image-preview" src="#" alt="Preview" style="max-height: 150px; margin-top: 10px; display: none;" />
+                </div>
+            </div>
+
+            <div class="custom-form-group mb-4">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" asp-for="IsActive">
+                    <label class="form-check-label fw-bold" asp-for="IsActive">Trạng thái hoạt động</label>
+                </div>
+            </div>
+
+            <div class="d-flex gap-3">
+                <a asp-action="AdminIndex" class="btn btn-light border flex-grow-1" style="border-radius: 12px; padding: 12px;">Hủy bỏ</a>
+                <button type="submit" class="btn btn-update-post flex-grow-1">Lưu thay đổi</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/post-create.js" asp-append-version="true"></script>
+}

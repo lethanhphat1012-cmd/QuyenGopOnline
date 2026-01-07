@@ -1,0 +1,29 @@
+@model QuyenGopOnline.Models.Post
+@section Styles { <link rel="stylesheet" href="~/css/post-details.css" asp-append-version="true" /> }
+
+<div class="details-container">
+    <div class="details-card">
+        <img src="@Model.ImageUrl" class="details-header-img" alt="Banner" />
+        <div class="details-body">
+            <h1 class="fw-bold mb-3">@Model.Title</h1>
+            <div class="stats-box d-flex justify-content-around">
+                <div class="text-center">
+                    <p class="text-muted mb-1">Mục tiêu</p>
+                    <h4 class="fw-bold text-dark">@Model.TargetAmount.ToString("N0") đ</h4>
+                </div>
+                <div class="text-center border-start ps-4">
+                    <p class="text-muted mb-1">Đã quyên góp</p>
+                    <h4 class="fw-bold text-success">@Model.CurrentAmount.ToString("N0") đ</h4>
+                </div>
+            </div>
+            <div class="mb-4">
+                <h5 class="fw-bold"><i class="fa-solid fa-circle-info me-2 text-primary"></i>Mô tả chiến dịch</h5>
+                <p class="description-text">@Model.Description</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a asp-action="AdminIndex" class="btn btn-light border px-4">Quay lại</a>
+                <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary px-4">Chỉnh sửa</a>
+            </div>
+        </div>
+    </div>
+</div>
