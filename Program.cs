@@ -1,24 +1,29 @@
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml;
 using QuyenGopOnline.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// --- BẮT ĐẦU PHẦN CẤU HÌNH DATABASE ---
-// 1. Lấy Connection String từ appsettings.json
+// 1. Cấu hình Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// 2. Đăng ký DbContext với SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
-// --- KẾT THÚC PHẦN CẤU HÌNH DATABASE ---
 
-// Add services to the container.
+// 2. Đăng ký các dịch vụ hệ thống
 builder.Services.AddControllersWithViews();
+builder.Services.AddHttpContextAccessor();
+
+// 3. Cấu hình Session (QUAN TRỌNG: Phải có Cache)
+builder.Services.AddDistributedMemoryCache(); 
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// 4. Cấu hình HTTP request pipeline (Middleware)
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -26,16 +31,17 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseStaticFiles(); // Đảm bảo dùng cái này để load CSS/JS
+
 app.UseRouting();
+
+// 5. BẬT SESSION TẠI ĐÂY (Phải nằm sau UseRouting và trước UseAuthorization)
+app.UseSession(); 
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Account}/{action=Login}/{id?}")
-    .WithStaticAssets();
-
+    pattern: "{controller=Account}/{action=Login}/{id?}");
 
 app.Run();

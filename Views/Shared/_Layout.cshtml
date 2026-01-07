@@ -1,5 +1,12 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Http
+@inject IHttpContextAccessor HttpContextAccessor
+   @{
+    // Lấy Role từ Session
+    var role = HttpContextAccessor.HttpContext?.Session.GetString("Role") ?? "";
+}
+<!DOCTYPE html>
 <html lang="vi">
+ 
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -34,9 +41,14 @@
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Donation" asp-action="History">Lịch sử & Sao kê</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" asp-controller="Post" asp-action="Dashboard">Quản trị viên</a>
-                        </li>
+                        @if (!string.IsNullOrEmpty(role) && role.Equals("Admin", StringComparison.OrdinalIgnoreCase))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-danger fw-bold" asp-controller="Post" asp-action="AdminIndex">
+                                    <i class="fas fa-user-shield me-1"></i>QUẢN TRỊ VIÊN
+                                </a>
+                            </li>
+                        }
                         <li class="nav-item">
                             <a class="nav-link" asp-controller="Home" asp-action="Privacy">Chính sách</a>
                         </li>

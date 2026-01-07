@@ -26,15 +26,17 @@ namespace QuyenGopOnline.Controllers
         {
             if (ModelState.IsValid)
             {
-                // TRUY VẤN DB: Tìm user có email và password khớp
-                // Lưu ý: Trong dự án thực tế, password nên được băm (Hash), ở đây mình làm so sánh chuỗi để bạn dễ hiểu trước.
                 var user = _context.Users
                     .FirstOrDefault(u => u.Email == model.Email && u.Password == model.Password);
 
                 if (user != null)
                 {
-                    // Đăng nhập thành công
-                    // Tùy vào Role (Admin/User) để điều hướng
+                    // === QUAN TRỌNG: LƯU THÔNG TIN VÀO SESSION TẠI ĐÂY ===
+                    HttpContext.Session.SetString("Role", user.Role ?? "");
+                    HttpContext.Session.SetString("UserEmail", user.Email ?? "");
+                    HttpContext.Session.SetString("FullName", user.FullName ?? "Người dùng");
+                    // ==================================================
+
                     if (user.Role == "Admin")
                     {
                         return RedirectToAction("Dashboard", "Post");
@@ -51,7 +53,6 @@ namespace QuyenGopOnline.Controllers
             }
             return View(model);
         }
-
         // GET: Hiển thị trang đăng ký
         [HttpGet]
         public IActionResult Register()
@@ -89,6 +90,12 @@ namespace QuyenGopOnline.Controllers
                 return RedirectToAction("Login");
             }
             return View(model);
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // Xóa sạch Session
+            return RedirectToAction("Login");
         }
 
     }

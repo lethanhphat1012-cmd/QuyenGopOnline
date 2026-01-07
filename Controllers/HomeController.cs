@@ -1,7 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using QuyenGopOnline.Models;
-using QuyenGopOnline.Data; // Đảm bảo có namespace này để nhận diện ApplicationDbContext
+using QuyenGopOnline.Data;
+using Microsoft.EntityFrameworkCore; // Đảm bảo có namespace này để nhận diện ApplicationDbContext
 
 namespace QuyenGopOnline.Controllers;
 
@@ -17,11 +18,18 @@ public class HomeController : Controller
         _context = context; // Bây giờ _context đã có dữ liệu từ Dependency Injection
     }
 
-    public IActionResult Index()
+    public async Task<IActionResult> Index()
     {
-        // Lấy danh sách bài viết từ DB. 
-        // Dùng .ToList() để đảm bảo dữ liệu được tải lên trước khi ra View
-        var posts = _context.Posts.ToList() ?? new List<Post>(); 
+        var posts = await _context.Posts.ToListAsync();
+        
+        foreach (var item in posts)
+        {
+            // Tính toán lại số tiền hiện có dựa trên bảng Transactions
+            item.CurrentAmount = await _context.Transactions
+                                        .Where(t => t.PostId == item.Id)
+                                        .SumAsync(t => t.Amount);
+        }
+        
         return View(posts);
     }
 
