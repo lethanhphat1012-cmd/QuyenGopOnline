@@ -3,6 +3,12 @@
     @{
 ViewData["Title"] = "Lịch sử quyên góp";
     }
+    <div class="d-flex justify-content-between mb-3">
+        <h2>Lịch sử quyên góp toàn hệ thống</h2>
+        <a asp-action="ExportToExcel" class="btn btn-outline-success">
+            <i class="fas fa-file-excel me-2"></i>Xuất File Excel Sao Kê
+        </a>
+    </div>
 
     <div class="container mt-5">
         <div class="card shadow border-0">
