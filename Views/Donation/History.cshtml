@@ -1,62 +1,97 @@
 ﻿@model IEnumerable<QuyenGopOnline.Models.Transaction>
 
-    @{
-ViewData["Title"] = "Lịch sử quyên góp";
-    }
-    <div class="d-flex justify-content-between mb-3">
-        <h2>Lịch sử quyên góp toàn hệ thống</h2>
-        <a asp-action="ExportToExcel" class="btn btn-outline-success">
-            <i class="fas fa-file-excel me-2"></i>Xuất File Excel Sao Kê
-        </a>
-    </div>
+@{
+    ViewData["Title"] = "Sao kê quyên góp";
+}
 
-    <div class="container mt-5">
-        <div class="card shadow border-0">
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <h4 class="mb-0"><i class="fas fa-history me-2"></i>Lịch sử giao dịch</h4>
-                <a asp-controller="Dashboard" asp-action="Index" class="btn btn-light btn-sm">Quay lại Dashboard</a>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Ngày giao dịch</th>
-                                <th>Hoàn cảnh / Bài viết</th>
-                                <th>Số tiền (VNĐ)</th>
-                                <th>Lời nhắn</th>
-                                <th>Trạng thái</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @if (Model != null && Model.Any())
-{
-foreach (var item in Model)
-{
-                            <tr>
-                                <td>@item.DonationDate.ToString("dd/MM/yyyy HH:mm")</td>
-                                <td><span class="fw-bold text-dark">Mã bài viết: #@item.PostId</span></td>
-                                <td>
-                                    <span class="text-success fw-bold">
-                                        + @item.Amount.ToString("N0")
-                                    </span>
-                                </td>
-                                <td class="text-muted small">@item.Note</td>
-                                <td>
-                                    <span class="badge bg-success">Thành công</span>
-                                </td>
-                            </tr>
+@section Styles {
+    <link rel="stylesheet" href="~/css/donation-history.css" asp-append-version="true" />
 }
-}
-else
-{
-                            <tr>
-                                <td colspan="5" class="text-center text-muted">Chưa có giao dịch nào được thực hiện.</td>
-                            </tr>
-}
-                        </tbody>
-                    </table>
+
+<div class="container history-wrapper">
+    <div class="row mb-4 align-items-center">
+        <div class="col-md-7">
+            <h2 class="fw-bold text-navy"><i class="fa-solid fa-file-invoice-dollar me-2 text-primary"></i>Sao Kê Minh Bạch</h2>
+            <p class="text-muted">Mọi giao dịch đóng góp đều được lưu trữ và công khai trên hệ thống.</p>
+        </div>
+        <div class="col-md-5">
+            <div class="qr-download-section d-flex align-items-center justify-content-center gap-3">
+                <div id="qrcode" class="qr-code-img"></div>
+                <div class="text-start">
+                    <h6 class="fw-bold mb-1">Quét QR tải Sao kê</h6>
+                    <p class="small text-muted mb-2">Tải file Excel ngay về máy</p>
+                    <a id="btnExport" asp-action="ExportToExcel" class="btn btn-primary btn-sm rounded-pill px-3">
+                        <i class="fas fa-download me-1"></i> Tải ngay
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="search-filter-card">
+        <div class="row g-3">
+            <div class="col-md-6">
+                <div class="input-group">
+                    <span class="input-group-text bg-white border-end-0"><i class="fa-solid fa-magnifying-glass text-muted"></i></span>
+                    <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Tìm theo lời nhắn hoặc mã bài viết...">
+                </div>
+            </div>
+            <div class="col-md-3">
+                <select id="filterAmount" class="form-select">
+                    <option value="">Mọi số tiền</option>
+                    <option value="1">Dưới 500k</option>
+                    <option value="2">500k - 2 triệu</option>
+                    <option value="3">Trên 2 triệu</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <button class="btn btn-outline-secondary w-100" onclick="resetFilters()">Làm mới bộ lọc</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="card table-card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0" id="historyTable">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Ngày giao dịch</th>
+                            <th>Chiến dịch</th>
+                            <th>Số tiền</th>
+                            <th>Lời nhắn</th>
+                            <th class="text-center">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model) {
+                        <tr>
+                            <td class="ps-4">
+                                <span class="d-block fw-bold">@item.DonationDate.ToString("dd/MM/yyyy")</span>
+                                <small class="text-muted">@item.DonationDate.ToString("HH:mm")</small>
+                            </td>
+                            <td>
+                                <span class="badge bg-light text-dark border">#@item.PostId</span>
+                            </td>
+                            <td>
+                                <span class="text-success fw-bold amount-val" data-amount="@item.Amount">
+                                    +@item.Amount.ToString("N0") <small>đ</small>
+                                </span>
+                            </td>
+                            <td class="text-muted note-cell" style="max-width: 250px;">@item.Note</td>
+                            <td class="text-center">
+                                <span class="badge-success-custom"><i class="fa-solid fa-check-circle me-1"></i>Thành công</span>
+                            </td>
+                        </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="~/js/donation-history.js" asp-append-version="true"></script>
+}
