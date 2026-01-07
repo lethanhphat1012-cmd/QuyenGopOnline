@@ -1,0 +1,129 @@
+/* Import Font sang trọng từ Google */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+:root {
+    --primary-color: #0d6efd;
+    --accent-color: #ffc107;
+    --dark-bg: #212529;
+    --light-bg: #f8f9fa;
+    --text-color: #333;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--text-color);
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* --- HEADER & NAVBAR --- */
+.custom-navbar {
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px); /* Hiệu ứng kính mờ hiện đại */
+    padding: 15px 0;
+    transition: all 0.3s ease-in-out;
+}
+
+.custom-navbar.scrolled {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    padding: 10px 0;
+}
+
+.brand-logo {
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #00b894 !important; /* Màu xanh ngọc tin cậy */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.nav-link {
+    font-weight: 500;
+    color: #555 !important;
+    margin: 0 10px;
+    position: relative;
+    transition: color 0.3s;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: #00b894 !important;
+}
+
+/* Hiệu ứng gạch chân khi hover */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #00b894;
+    transition: width 0.3s;
+}
+
+.nav-link:hover::after {
+    width: 100%;
+}
+
+.btn-cta {
+    background: linear-gradient(45deg, #ff9f43, #ff6b6b);
+    color: white !important;
+    border-radius: 30px;
+    padding: 8px 25px;
+    font-weight: 600;
+    border: none;
+    box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+    transition: transform 0.3s;
+}
+
+.btn-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255, 107, 107, 0.4);
+}
+
+/* --- MAIN CONTENT --- */
+main {
+    flex: 1;
+}
+
+/* --- FOOTER --- */
+.custom-footer {
+    background-color: var(--dark-bg);
+    color: #adb5bd;
+    padding-top: 60px;
+    padding-bottom: 20px;
+    margin-top: auto;
+}
+
+.footer-title {
+    color: white;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+.footer-link {
+    color: #adb5bd;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 10px;
+    transition: color 0.3s;
+}
+
+.footer-link:hover {
+    color: var(--accent-color);
+    padding-left: 5px;
+}
+
+.social-icon {
+    font-size: 1.2rem;
+    margin-right: 15px;
+    color: white;
+    transition: color 0.3s;
+}
+
+.social-icon:hover {
+    color: var(--accent-color);
+}
+

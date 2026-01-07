@@ -1,57 +1,106 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - QuyenGopOnline</title>
-    <script type="importmap"></script>
+    
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/layout.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/QuyenGopOnline.styles.css" asp-append-version="true" />
+    
     @await RenderSectionAsync("Styles", required: false)
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">QuyenGopOnline</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg fixed-top custom-navbar">
+            <div class="container">
+                <a class="navbar-brand brand-logo" asp-controller="Home" asp-action="Index">
+                    <i class="fa-solid fa-hand-holding-heart me-2"></i>QuyenGop<span class="text-warning">Online</span>
+                </a>
+                <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse" id="navbarContent">
+                    <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Trang chủ</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link" asp-controller="Donation" asp-action="History">Lịch sử & Sao kê</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Post" asp-action="Dashboard">Dashboard</a>
+                            <a class="nav-link" asp-controller="Post" asp-action="Dashboard">Quản trị viên</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Donation" asp-action="History">Lịch sử quyên góp</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Privacy">Chính sách</a>
                         </li>
                     </ul>
+                    <div class="d-flex">
+                        <a href="/#campaigns" class="btn btn-cta">
+                            <i class="fa-solid fa-heart me-2"></i>Quyên Góp Ngay
+                        </a>
+                    </div>
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
 
-    <footer class="border-top footer text-muted">
+    <main role="main" style="padding-top: 80px;">
+        @if (ViewData["IsFullWidth"] != null && (bool)ViewData["IsFullWidth"])
+        {
+            @RenderBody() }
+        else
+        {
+            <div class="container mt-4 mb-5">
+                @RenderBody() </div>
+        }
+    </main>
+
+    <footer class="custom-footer border-top">
         <div class="container">
-            &copy; 2026 - QuyenGopOnline - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Về Chúng Tôi</h5>
+                    <p class="small text-muted">
+                        Nền tảng quyên góp trực tuyến minh bạch, tin cậy. Nơi kết nối những tấm lòng vàng đến với những hoàn cảnh khó khăn.
+                    </p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Liên Kết Nhanh</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="footer-link">Hướng dẫn quyên góp</a></li>
+                        <li><a href="#" class="footer-link">Báo cáo tài chính</a></li>
+                        <li><a href="#" class="footer-link">Đối tác đồng hành</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Kết Nối</h5>
+                    <div class="mb-3">
+                        <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-youtube"></i></a>
+                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+                    </div>
+                    <p class="small text-muted">Email: contact@quyengop.vn</p>
+                </div>
+            </div>
+            <hr class="border-secondary my-4">
+            <div class="text-center small text-muted">
+                &copy; 2026 - QuyenGopOnline - Trao gửi yêu thương
+            </div>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/layout.js" asp-append-version="true"></script>
+    
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
