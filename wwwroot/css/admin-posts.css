@@ -68,3 +68,38 @@
     border-radius: 20px;
     font-size: 0.8rem;
 }
+
+/* Avatar hình tròn */
+.avatar-sm {
+    width: 35px; 
+    height: 35px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+/* Badge trạng thái tùy chỉnh */
+.badge-custom {
+    padding: 5px 10px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+/* Màu xanh cho đã xác thực */
+.badge-verified {
+    background-color: #d1e7dd;
+    color: #0f5132;
+    border: 1px solid #badbcc;
+}
+
+/* Màu xám cho chưa xác thực */
+.badge-unverified {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+}
+
+/* Hiệu ứng hover cho hàng */
+.table-hover tbody tr:hover {
+    background-color: rgba(0,0,0,0.02);
+}

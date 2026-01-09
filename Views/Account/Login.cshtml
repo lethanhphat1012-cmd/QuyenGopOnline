@@ -1,39 +1,61 @@
 @model QuyenGopOnline.Models.LoginViewModel
-
 @{
-    ViewData["Title"] = "Đăng nhập hệ thống";
+    ViewData["Title"] = "Chào mừng trở lại";
+    Layout = "_Layout"; 
 }
 
-<div class="row justify-content-center mt-5">
-    <div class="col-md-4">
-        <div class="card shadow">
-            <div class="card-body">
-                <h3 class="text-center">Đăng Nhập</h3>
-                <hr />
-                <form asp-action="Login" method="post">
-                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<link rel="stylesheet" href="~/css/auth.css" asp-append-version="true" />
+
+<div class="auth-body">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="auth-card animate__animated animate__fadeInUp">
+                    <div class="auth-header">
+                        <i class="fas fa-hand-holding-heart fa-3x mb-3"></i>
+                        <h2 class="fw-bold">ĐĂNG NHẬP</h2>
+                        <p class="small opacity-75">Kết nối những tấm lòng vàng</p>
+                    </div>
                     
-                    <div class="form-group mb-3">
-                        <label asp-for="Email" class="control-label"></label>
-                        <input asp-for="Email" class="form-control" placeholder="admin@gmail.com" />
-                        <span asp-validation-for="Email" class="text-danger"></span>
-                    </div>
+                    <div class="auth-form-container">
+                        <form asp-action="Login" method="post" id="loginForm">
+                            <div asp-validation-summary="ModelOnly" class="text-danger small"></div>
+                            
+                            <div class="mb-4">
+                                <label asp-for="Email" class="form-label small fw-bold text-muted">EMAIL</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i class="far fa-envelope text-muted"></i></span>
+                                    <input asp-for="Email" class="form-control form-control-custom border-start-0" placeholder="yourname@gmail.com" />
+                                </div>
+                                <span asp-validation-for="Email" class="text-danger small"></span>
+                            </div>
 
-                    <div class="form-group mb-3">
-                        <label asp-for="Password" class="control-label"></label>
-                        <input asp-for="Password" class="form-control" type="password" placeholder="123456" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-                    </div>
+                            <div class="mb-4">
+                                <label asp-for="Password" class="form-label small fw-bold text-muted">MẬT KHẨU</label>
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0"><i class="fas fa-lock text-muted"></i></span>
+                                    <input asp-for="Password" class="form-control form-control-custom border-start-0" type="password" placeholder="••••••••" />
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small"></span>
+                            </div>
 
-                    <div class="form-group mb-3 form-check">
-                        <input class="form-check-input" asp-for="RememberMe" /> Ghi nhớ tôi
-                    </div>
+                            <div class="d-flex justify-content-between mb-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" asp-for="RememberMe" />
+                                    <label class="form-check-label small" for="RememberMe">Ghi nhớ tôi</label>
+                                </div>
+                                <a href="#" class="small text-decoration-none">Quên mật khẩu?</a>
+                            </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Đăng Nhập</button>
-                    <p class="mt-3 text-center">
-                        Chưa có tài khoản? <a asp-action="Register">Đăng ký tại đây</a>
-                    </p>
-                </form>
+                            <button type="submit" class="btn btn-primary btn-auth w-100 text-white">VÀO HỆ THỐNG</button>
+                            
+                            <div class="mt-4 text-center">
+                                <span class="small text-muted">Bạn chưa là thành viên?</span>
+                                <a asp-action="Register" class="small fw-bold text-decoration-none ms-1">Đăng ký ngay</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

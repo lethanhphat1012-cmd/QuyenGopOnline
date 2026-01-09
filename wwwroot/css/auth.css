@@ -1,0 +1,70 @@
+/* auth.css */
+:root {
+    --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --glass-bg: rgba(255, 255, 255, 0.9);
+    --soft-shadow: 0 15px 35px rgba(0,0,0,0.1);
+}
+
+.auth-body {
+    background: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.auth-card {
+    border: none;
+    border-radius: 20px;
+    background: var(--glass-bg);
+    box-shadow: var(--soft-shadow);
+    overflow: hidden;
+    transition: transform 0.3s ease;
+}
+
+.auth-header {
+    background: var(--primary-gradient);
+    padding: 40px 20px;
+    text-align: center;
+    color: white;
+}
+
+.auth-form-container {
+    padding: 40px;
+}
+
+.form-control-custom {
+    border-radius: 10px;
+    padding: 12px 15px;
+    border: 1px solid #e1e1e1;
+    background: #fdfdfd;
+}
+
+.form-control-custom:focus {
+    box-shadow: 0 0 10px rgba(102, 126, 234, 0.2);
+    border-color: #667eea;
+}
+
+.btn-auth {
+    background: var(--primary-gradient);
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+}
+
+.btn-auth:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+    opacity: 0.9;
+}
+
+/* Privacy Page Styles */
+.policy-card {
+    border-radius: 15px;
+    border-left: 5px solid #667eea;
+    background: white;
+    margin-bottom: 20px;
+}

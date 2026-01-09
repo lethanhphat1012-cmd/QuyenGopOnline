@@ -18,18 +18,18 @@ public class HomeController : Controller
         _context = context; // Bây giờ _context đã có dữ liệu từ Dependency Injection
     }
 
-    public async Task<IActionResult> Index()
+    public IActionResult Index()
     {
-        var posts = await _context.Posts.ToListAsync();
+        var posts = _context.Posts.ToList(); // Hoặc logic lấy danh sách bài viết của bạn
         
-        foreach (var item in posts)
+        // Kiểm tra trạng thái xác thực của User hiện tại
+        var userEmail = HttpContext.Session.GetString("UserEmail");
+        if (!string.IsNullOrEmpty(userEmail))
         {
-            // Tính toán lại số tiền hiện có dựa trên bảng Transactions
-            item.CurrentAmount = await _context.Transactions
-                                        .Where(t => t.PostId == item.Id)
-                                        .SumAsync(t => t.Amount);
+            var user = _context.Users.FirstOrDefault(u => u.Email == userEmail);
+            ViewBag.IsVerified = user?.IsVerified ?? false;
         }
-        
+
         return View(posts);
     }
 

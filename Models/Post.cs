@@ -34,5 +34,13 @@ namespace QuyenGopOnline.Models
         public DateTime CreatedDate { get; set; } = DateTime.Now;
 
         public bool IsActive { get; set; } = true;
+
+        public DateTime CreatedAt { get; set; } = DateTime.Now; // Ngày tạo
+        public bool IsApproved { get; set; } = false;          // Trạng thái duyệt
+        public int? UserId { get; set; }                        // ID người đăng
+
+        // (Tùy chọn) Thêm liên kết với bảng User để sau này lấy tên người đăng cho dễ
+        [ForeignKey("UserId")]
+        public virtual User? User { get; set; }
     }
 }

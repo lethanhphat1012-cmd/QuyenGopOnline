@@ -1,24 +1,64 @@
 ﻿@model IEnumerable<QuyenGopOnline.Models.Post>
 @{
     ViewData["IsFullWidth"] = true;
-}
-@{
     ViewData["Title"] = "Trang Chủ - Chung Tay Góp Sức";
 }
 
 @section Styles {
     <link rel="stylesheet" href="~/css/home-index.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 }
 
 <header class="hero-section text-white text-center d-flex align-items-center">
     <div class="container py-5">
-        <h1 class="display-3 fw-bold mb-3">Trao Gửi Yêu Thương</h1>
-        <p class="lead mb-4">Mỗi đóng góp của bạn là một niềm hy vọng mới cho những mảnh đời khó khăn.</p>
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown">Trao Gửi Yêu Thương</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Mỗi đóng góp của bạn là một niềm hy vọng mới cho những mảnh đời khó khăn.</p>
         <a href="#campaigns" class="btn btn-warning btn-lg px-4 fw-bold shadow">Khám Phá Ngay</a>
     </div>
 </header>
 
 <main class="container my-5" id="campaigns">
+    <div class="container mt-4 text-center">
+        @* Lấy thông tin từ Session để hiển thị Alert phù hợp *@
+        @{
+            var userRole = Context.Session.GetString("UserRole");
+            var userEmail = Context.Session.GetString("UserEmail");
+            // Giả sử bạn truyền IsVerified qua ViewBag từ HomeController, nếu không có thì mặc định false
+            var isVerified = ViewBag.IsVerified != null && (bool)ViewBag.IsVerified;
+        }
+
+        @if (userEmail != null)
+        {
+            @if (isVerified || userRole == "Admin")
+            {
+                @* TRƯỜNG HỢP 1: ĐÃ XÁC THỰC HOẶC LÀ ADMIN *@
+                <div class="alert alert-success border-0 shadow-sm p-4 animate__animated animate__zoomIn">
+                    <h4 class="fw-bold text-success"><i class="fas fa-check-circle me-2"></i>Tài khoản đã xác minh danh tính</h4>
+                    <p class="text-muted">Tuyệt vời! Bạn đã có toàn quyền tạo các chiến dịch quyên góp minh bạch.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="/Post/Create" class="btn btn-danger btn-lg px-5 shadow animate__animated animate__pulse animate__infinite">
+                            <i class="fas fa-plus-circle me-2"></i>Tạo Chiến Dịch Mới
+                        </a>
+                        <a href="/Account/Profile" class="btn btn-outline-success btn-lg px-4">
+                            <i class="fas fa-user-badge me-2"></i>Xem Hồ Sơ eKYC
+                        </a>
+                    </div>
+                </div>
+            }
+            else
+            {
+                @* TRƯỜNG HỢP 2: ĐÃ ĐĂNG NHẬP NHƯNG CHƯA XÁC THỰC *@
+                <div class="alert alert-warning border-0 shadow-sm p-4 animate__animated animate__headShake">
+                    <h4 class="fw-bold text-dark"><i class="fas fa-shield-alt me-2"></i>Yêu cầu xác thực tài khoản</h4>
+                    <p class="text-muted">Để đảm bảo tính minh bạch và an toàn, vui lòng thực hiện định danh eKYC trước khi tạo bài viết.</p>
+                    <a href="/Account/VerifyIdentity" class="btn btn-warning btn-lg px-5 fw-bold shadow-sm">
+                        <i class="fas fa-id-card me-2"></i>Bắt đầu xác thực ngay
+                    </a>
+                </div>
+            }
+        }
+    </div>
+
     <div class="text-center mb-5">
         <h2 class="section-title fw-bold">CÁC HOÀN CẢNH CẦN GIÚP ĐỠ</h2>
         <div class="title-underline mx-auto"></div>
@@ -28,11 +68,13 @@
         @foreach (var item in Model)
         {
             var percent = item.TargetAmount > 0 ? (item.CurrentAmount / item.TargetAmount * 100) : 0;
-            
+            // Ép kiểu phần trăm về số nguyên để hiển thị CSS đẹp hơn
+            var percentWidth = percent > 100 ? 100 : percent;
+
             <div class="col-lg-4 col-md-6">
                 <div class="card h-100 donation-card border-0 shadow-sm overflow-hidden">
                     <div class="position-relative">
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title">
+                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Title" style="height: 220px; object-fit: cover;">
                         <span class="badge position-absolute top-0 start-0 m-3 @(item.IsActive ? "bg-success" : "bg-secondary")">
                             @(item.IsActive ? "Đang kêu gọi" : "Đã đóng")
                         </span>
@@ -41,24 +83,27 @@
                     <div class="card-body p-4">
                         <h5 class="card-title fw-bold text-dark mb-3">@item.Title</h5>
                         <p class="card-text text-muted mb-4">
-                            @(item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
+                            @(item.Description != null && item.Description.Length > 100 ? item.Description.Substring(0, 100) + "..." : item.Description)
                         </p>
 
                         <div class="stats-box mb-3">
-                            <div class="progress rounded-pill mb-2" style="height: 12px;">
+                            <div class="d-flex justify-content-between mb-1">
+                                <span class="small fw-bold text-primary">Tiến độ: @Math.Round(percent, 1)%</span>
+                            </div>
+                            <div class="progress rounded-pill mb-2" style="height: 10px;">
                                 <div class="progress-bar progress-bar-striped progress-bar-animated bg-warning" 
-                                     style="width: @percent%" role="progressbar"></div>
+                                     style="width: @percentWidth%" role="progressbar"></div>
                             </div>
                             <div class="d-flex justify-content-between small fw-bold mt-1">
-                                <span class="text-primary">@item.CurrentAmount.ToString("N0")đ</span>
+                                <span class="text-dark">@item.CurrentAmount.ToString("N0")đ</span>
                                 <span class="text-muted">Mục tiêu: @item.TargetAmount.ToString("N0")đ</span>
                             </div>
                         </div>
                     </div>
 
                     <div class="card-footer bg-white border-top-0 p-4 pt-0">
-                        <a href="/Donation/TestDonate?postId=@item.Id" class="btn btn-donate w-100 fw-bold py-2">
-                            QUYÊN GÓP NGAY
+                        <a href="/Donation/TestDonate?postId=@item.Id" class="btn btn-donate w-100 fw-bold py-2 shadow-sm">
+                            <i class="fas fa-heart me-2"></i>QUYÊN GÓP NGAY
                         </a>
                     </div>
                 </div>

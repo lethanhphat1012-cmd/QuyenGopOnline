@@ -1,0 +1,57 @@
+/* Container chính */
+.verify-wrapper {
+    max-width: 600px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Khung chứa Camera */
+.scanner-container {
+    position: relative;
+    width: 100%;
+    max-width: 400px;
+    height: 300px; /* Chiều cao cố định để không bị nhảy layout */
+    margin: 0 auto 20px;
+    background: #000;
+    border-radius: 15px;
+    overflow: hidden;
+    border: 2px solid #ddd;
+}
+
+/* Hiệu ứng tia laser quét (Overlay) */
+.scan-region-highlight {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    background: linear-gradient(to bottom, rgba(0, 255, 0, 0) 50%, rgba(0, 255, 0, 0.2) 50%, rgba(0, 255, 0, 0) 51%);
+    background-size: 100% 200%;
+    animation: scanAnimation 3s linear infinite;
+    z-index: 10;
+    display: none; /* Chỉ hiện khi camera chạy */
+}
+
+@keyframes scanAnimation {
+    0% { background-position: 0% 0%; }
+    100% { background-position: 0% 100%; }
+}
+
+/* Kết quả sau khi quét */
+#result-section {
+    display: none;
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+
+.captured-img {
+    width: 100%;
+    max-width: 300px;
+    border-radius: 10px;
+    border: 2px solid #28a745;
+    margin-top: 10px;
+}

@@ -1,0 +1,68 @@
+@model QuyenGopOnline.Models.User
+@{
+    ViewData["Title"] = "Hồ sơ xác thực";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/profile-ekyc.css" />
+}
+
+<div class="profile-container mt-5">
+    <div class="glass-card shadow">
+        <div class="header-section text-center p-4">
+            <div class="status-badge @(Model.IsVerified ? "verified" : "unverified")">
+                <i class="fas @(Model.IsVerified ? "fa-check-shield" : "fa-user-slash")"></i>
+                @(Model.IsVerified ? "ĐÃ XÁC THỰC DANH TÍNH" : "CHƯA XÁC THỰC")
+            </div>
+            <h2 class="mt-3 fw-bold text-white">@Model.FullName</h2>
+            <p class="text-white-50">Tài khoản @Model.Role</p>
+        </div>
+
+        <div class="body-section p-4">
+            <div class="row g-4">
+                <div class="col-lg-5">
+                    <div class="id-card-wrapper shadow-sm">
+                        <p class="label-text"><i class="fas fa-image me-2"></i>Bản quét thẻ CCCD</p>
+                        <img src="@Model.IdCardImage" class="img-fluid rounded" alt="Identity Card" />
+                        <div class="scan-line"></div>
+                    </div>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <span class="label">Số định danh (ID)</span>
+                            <span class="value text-primary">@Model.IdCardNumber</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Ngày sinh</span>
+                            <span class="value">@Model.DateOfBirth</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Giới tính</span>
+                            <span class="value">@Model.Gender</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Quốc tịch</span>
+                            <span class="value">@Model.Nationality</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="label">Quê quán</span>
+                            <span class="value">@Model.Address</span>
+                        </div>
+                    </div>
+                    
+                    <div class="action-buttons mt-4">
+                        <a href="/Post/Create" class="btn btn-gradient w-100 py-3">
+                            <i class="fas fa-plus-circle me-2"></i>BẮT ĐẦU TẠO BÀI VIẾT QUYÊN GÓP
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/profile-ekyc.js"></script>
+}

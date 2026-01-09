@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using QuyenGopOnline.Data;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls("http://localhost:5099", "http://192.168.1.118:5099");
+builder.WebHost.UseUrls("http://localhost:5099", "http://192.168.1.60:5099");
 
 // 1. Cấu hình Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");

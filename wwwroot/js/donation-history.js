@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
     // 1. Tạo mã QR tự động từ link xuất Excel
-    const computerIP = "192.168.1.118:5099"; 
+    const computerIP = "192.168.1.60:5099"; 
     const actionPath = document.getElementById("btnExport").getAttribute("href");
     const exportUrl = "http://" + computerIP + actionPath;
     console.log("Link QR sẽ là: " + exportUrl);

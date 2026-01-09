@@ -1,0 +1,137 @@
+@{
+    ViewData["Title"] = "Xác thực danh tính (eKYC)";
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/verify.css" />
+    <style>
+        .scanner-container { position: relative; border-radius: 10px; overflow: hidden; background: #000; }
+        .upload-zone { border: 3px dashed #0d6efd; border-radius: 15px; background: #f8f9fa; cursor: pointer; padding: 20px; transition: 0.3s; }
+        .upload-zone:hover { background: #e9ecef; }
+        .step-number { width: 30px; height: 30px; background: #0d6efd; color: white; display: inline-flex; align-items: center; justify-content: center; border-radius: 50%; font-weight: bold; margin-right: 10px; }
+        .preview-img { max-width: 100%; border-radius: 10px; margin-top: 10px; border: 1px solid #ddd; }
+    </style>
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0 p-4">
+        <h2 class="fw-bold mb-4 text-primary text-center">Xác thực eKYC</h2>
+
+        <div id="step-qr">
+            <h5 class="fw-bold mb-3"><span class="step-number">1</span>Quét mã QR trên CCCD</h5>
+            <div class="scanner-container mx-auto mb-4" style="max-width: 500px;">
+                <div id="reader"></div>
+            </div>
+            <div id="status-msg" class="alert alert-info text-center">Đang chờ quét mã QR...</div>
+        </div>
+
+        <div id="step-upload" class="d-none">
+            <h5 class="fw-bold mb-3 text-success"><span class="step-number">2</span>Tải ảnh CCCD Đối Chiếu</h5>
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>QR Hợp lệ. ID: <strong id="display-qr-id"></strong>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-12 mb-3">
+                    <div class="upload-zone text-center" onclick="document.getElementById('file-front').click()">
+                        <i class="fas fa-camera fa-2x mb-2 text-primary"></i>
+                        <p>Nhấp để tải ảnh Mặt Trước</p>
+                        <input type="file" id="file-front" class="d-none" accept="image/*" onchange="processPreview(this)">
+                        <img id="preview-front" class="preview-img d-none">
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn btn-primary btn-lg w-100 mt-3" onclick="sendToGemini()">
+                <i class="fas fa-brain me-2"></i>GỬI ĐẾN GEMINI AI XÁC THỰC
+            </button>
+        </div>
+    </div>
+    <input type="hidden" id="qr-data-store" />
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+    <script>
+        let globalQrData = "";
+        let globalImageBase64 = "";
+        let html5QrCode;
+
+        window.onload = function() {
+            html5QrCode = new Html5Qrcode("reader");
+            const config = { 
+                fps: 10, 
+                qrbox: { width: 250, height: 250 },
+                aspectRatio: 1.0 
+            };
+            
+            html5QrCode.start({ facingMode: "environment" }, config, onScanSuccess)
+            .catch(err => {
+                document.getElementById("status-msg").innerHTML = "Lỗi Camera: " + err;
+            });
+        };
+
+        function onScanSuccess(decodedText) {
+            // Rung nhẹ điện thoại khi quét trúng (nếu trình duyệt hỗ trợ)
+            if (navigator.vibrate) navigator.vibrate(100);
+
+            globalQrData = decodedText;
+            document.getElementById("qr-data-store").value = decodedText;
+            
+            const qrParts = decodedText.split('|');
+            document.getElementById("display-qr-id").innerText = qrParts[0];
+
+            html5QrCode.stop().then(() => {
+                document.getElementById("step-qr").classList.add("d-none");
+                document.getElementById("step-upload").classList.remove("d-none");
+            });
+        }
+
+        function processPreview(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    globalImageBase64 = e.target.result;
+                    const preview = document.getElementById('preview-front');
+                    preview.src = e.target.result;
+                    preview.classList.remove('d-none');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function sendToGemini() {
+            if (!globalImageBase64) {
+                Swal.fire("Lưu ý", "Vui lòng tải ảnh mặt trước CCCD", "warning");
+                return;
+            }
+
+            Swal.fire({
+                title: 'Đang xác thực...',
+                text: 'Gemini AI đang đối chiếu dữ liệu',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            const formData = new FormData();
+            formData.append("qrData", globalQrData);
+            formData.append("imageFile", globalImageBase64);
+
+            fetch('/Account/VerifyIdentity', {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    Swal.fire("Thành công", data.message, "success")
+                        .then(() => window.location.href = "/Home/Index");
+                } else {
+                    Swal.fire("Thất bại", data.message, "error");
+                }
+            })
+            .catch(err => Swal.fire("Lỗi", "Không thể kết nối server", "error"));
+        }
+    </script>
+}
